@@ -1,0 +1,15 @@
+<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><title>問卷資料接收橋接</title><p>此頁只接收指定問卷網站送出的資料，不提供研究資料查詢。</p><script>
+const config=<?!= config ?>;
+let busy=false;
+window.addEventListener('message',event=>{
+  if(event.origin!==config.origin||event.source!==window.parent||window.parent===window)return;
+  const msg=event.data;
+  if(!msg||msg.channel!=='ffni-google-sheets-v1'||typeof msg.requestId!=='string'||msg.requestId.length>100)return;
+  const reply=data=>event.source.postMessage({channel:'ffni-google-sheets-v1',requestId:msg.requestId,...data},config.origin);
+  if(msg.action==='status'){reply({action:'status',config});return;}
+  if(msg.action!=='submit'||busy)return;
+  if(!config.ready){reply({action:'result',ok:false,error:'尚未啟用資料接收。'});return;}
+  busy=true;
+  google.script.run.withSuccessHandler(result=>{busy=false;reply({action:'result',...result});}).withFailureHandler(()=>{busy=false;reply({action:'result',ok:false,error:'資料未確認儲存，請稍後重試。'});}).receiveSubmission(msg.payload);
+});
+</script></html>
