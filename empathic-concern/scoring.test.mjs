@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import {items,scoreConcern} from './data.js';
+assert.equal(items.length,7);
+assert.deepEqual(items.filter(q=>q.reverse).map(q=>q.id),[2,4,5]);
+assert.deepEqual(scoreConcern([5,1,5,1,1,5,5]),{values:[5,5,5,5,5,5,5],total:35,mean:5});
+assert.deepEqual(scoreConcern([1,5,1,5,5,1,1]),{values:[1,1,1,1,1,1,1],total:7,mean:1});
+assert.equal(scoreConcern(Array(7).fill(3)).mean,3);
+assert.equal(scoreConcern(Array(7).fill(1)).total,19);
+assert.equal(scoreConcern(Array(7).fill(5)).total,23);
+for(const a of [[],Array(6).fill(3),Array(7).fill(null),[3,3,3,3,3,3,6],[3,3,3,3,3,3,0],[3,3,3,3,3,3,2.5]])assert.throws(()=>scoreConcern(a));
+console.log('PASS: 7 items, textbook reverse keys 2/4/5, endpoints, neutral, all-same patterns and missing/invalid answers.');
