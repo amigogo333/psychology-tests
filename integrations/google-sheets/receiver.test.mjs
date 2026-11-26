@@ -17,7 +17,7 @@ assert.equal(context.safeCell_(3),3);
 // Exercise the write endpoint with isolated spreadsheet mocks, including dedupe.
 let receivedRows=[],contactRows=[],flushes=0;
 const schema=JSON.parse(fs.readFileSync(new URL('./headers.json',import.meta.url),'utf8'));
-function sheet(headers,rows){return {getMaxColumns:()=>headers.length,getLastRow:()=>1+rows.length,getRange:(r,c,h,w)=>({getValues:()=>[headers],createTextFinder:id=>({matchEntireCell:()=>({findNext:()=>receivedRows.some(row=>row[2]===id)?{}:null})}),setValues:value=>{rows[r-2]=value[0];},clearContent:()=>{rows.splice(r-2,1);}})};}
+function sheet(headers,rows){let capacity=1;return {getMaxRows:()=>capacity,insertRowsAfter:(limit,count)=>{assert.equal(limit,capacity);capacity+=count;},getMaxColumns:()=>headers.length,getLastRow:()=>1+rows.length,getRange:(r,c,h,w)=>({getValues:()=>[headers],createTextFinder:id=>({matchEntireCell:()=>({findNext:()=>receivedRows.some(row=>row[2]===id)?{}:null})}),setValues:value=>{assert(r<=capacity);rows[r-2]=value[0];},clearContent:()=>{rows.splice(r-2,1);}})};}
 const rs=sheet(schema.response,receivedRows),cs=sheet(schema.contact,contactRows),ss={getSheetByName:name=>name==='作答資料'?rs:cs};
 const config={SPREADSHEET_ID:'test-only',COLLECTION_ENABLED:'true',NOTICE_VERSION:'test-v1',RESEARCHER_NAME:'test',RESEARCHER_EMAIL:'test@example.com',RETENTION_DESCRIPTION:'test'};
 context.PropertiesService={getScriptProperties:()=>({getProperty:k=>config[k]||null,setProperty:(k,v)=>{config[k]=v;}})};

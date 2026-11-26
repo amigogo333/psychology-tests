@@ -120,6 +120,13 @@ function validate_(input,config) {
   return {id,startedAt,finishedAt,answers,scores,background,npi,npiTotal,contact};
 }
 
+function nextRow_(sheet) {
+  const row = sheet.getLastRow() + 1;
+  const limit = sheet.getMaxRows();
+  if (row > limit) sheet.insertRowsAfter(limit, Math.max(100, row - limit));
+  return row;
+}
+
 // Only externally callable write endpoint. No public list, lookup or export function.
 function receiveSubmission(input) {
   const c=configuration_();
@@ -137,7 +144,7 @@ function receiveSubmission(input) {
     const fs=d.scores.facets,cs=d.scores.composites;
     const row=[Utilities.getUuid(),received,d.id,d.startedAt,d.finishedAt,INSTRUMENT_VERSION,SCHEMA_VERSION,c.noticeVersion,...d.background,d.npiTotal,...d.npi,...d.answers,d.scores.total,...fs.map(f=>f.sum),...fs.map(f=>f.mean),...cs.map(f=>f.sum),...cs.map(f=>f.mean)].map(safeCell_);
     if(row.length!==RESPONSE_HEADERS.length)throw new Error('資料欄位長度不符。');
-    const rr=sheet.getLastRow()+1,cr=contacts.getLastRow()+1;
+    const rr=nextRow_(sheet),cr=d.contact?nextRow_(contacts):null;
     try {
       if(d.contact)contacts.getRange(cr,1,1,CONTACT_HEADERS.length).setValues([[d.id,safeCell_(d.contact),'research_invitation',c.noticeVersion,received,'']]);
       sheet.getRange(rr,1,1,row.length).setValues([row]);
