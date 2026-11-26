@@ -4,10 +4,11 @@
 <body>
 <header><a class="brand" href="../">自我探索練習室<span>SELF-EXPLORATION</span></a><a class="back" href="../narcissism-reflection/">回到短測驗</a></header>
 <main>
-<div class="preview-note"><strong>網站試用版</strong><span>本版不傳送答案、背景資料或電郵。作答進度僅暫存於此瀏覽器分頁。</span></div>
+<div class="preview-note" role="status"><strong id="collection-title">個人作答</strong><span id="collection-summary">作答進度暫存於此瀏覽器分頁。</span><span id="storage-warning" hidden>此瀏覽器無法暫存進度，請保留分頁。</span></div>
 <section id="welcome" aria-labelledby="welcome-title">
   <div class="hero"><div><p class="eyebrow">A DEEPER LOOK WITHIN</p><h1 id="welcome-title" tabindex="-1">你有很多面向，<br>值得慢慢理解。</h1><p class="lead">從希望被看見的自己，到面對評價的感受。<br>留一段時間，認識你與自己、他人的關係。</p></div><div class="orbit-art" aria-hidden="true"><i></i><i></i><i></i><span>光與影，都屬於你。</span></div></div>
   <div class="chips"><span>FFNI 完整 148 題</span><span>五點作答</span><span>15 個特質面向</span></div>
+  <p id="welcome-disclosure" class="panel" hidden></p>
   <p id="entry-summary" class="entry-summary" hidden></p>
   <div class="intro-grid"><article class="panel"><p class="eyebrow">HOW IT WORKS</p><h2>依平時的自己作答。</h2><p>每題選擇從「非常不同意」到「非常同意」。沒有標準答案；不必表現得更好，也不必刻意嚴格看待自己。</p><p>共分 15 頁，可返回修改。背景資料可略過；關閉分頁可能清除進度。</p></article><article class="panel quiet"><p class="eyebrow">BEFORE YOU BEGIN</p><h2>是探索的線索，<br>也是理解的起點。</h2><p>中文內容為待審閱試譯，尚未驗證於台灣族群。結果不作心理診斷，不提供常模排名或自戀百分比。</p></article></div>
   <div id="resume-box" class="panel" hidden><h2>接著上次的進度。</h2><p id="resume-count"></p><div class="actions"><button id="resume" class="primary">繼續作答</button><button id="new-attempt">清除進度並重新開始</button></div></div>
@@ -19,7 +20,7 @@
   <div class="panel form-grid">
     <fieldset><legend>性別</legend><div class="inline-options"><label><input type="radio" name="gender" value="male">男</label><label><input type="radio" name="gender" value="female">女</label><label><input type="radio" name="gender" value="other">其他</label></div></fieldset>
     <label class="field">年齡（足歲）<input name="age" type="number" min="1" max="120" step="1" inputmode="numeric" placeholder="例如：18"><small>不需要生日。</small></label>
-    <label class="field">目前主要的就學／工作狀態<select name="status"><option value="">請選擇（可略過）</option value="highschool">高中職學生</option><option value="college">大專院校學生</option><option value="graduate">研究生</option><option value="employed">就業中</option><option value="other">其他</option></select></label>
+    <label class="field">目前主要的就學／工作狀態<select name="status"><option value="">請選擇（可略過）</option><option value="highschool">高中職學生</option><option value="college">大專院校學生</option><option value="graduate">研究生</option><option value="employed">就業中</option><option value="other">其他</option></select></label>
     <label class="field" id="year-field" hidden>目前年級<select name="year"><option value="">請選擇（可略過）</option><option>一年級</option><option>二年級</option><option>三年級</option><option>四年級</option><option>五年級以上</option><option>其他</option></select></label>
     <fieldset class="wide"><legend>過去 30 天，你使用哪些社群平台？</legend><p class="hint">可複選。「沒有使用」與其他選項互斥；抖音與 TikTok 分開計。</p><div id="platform-options" class="option-grid"></div><label class="field" id="other-platform-field" hidden>其他平台名稱<input name="otherPlatform" maxlength="80" placeholder="選填"></label></fieldset>
     <div id="social-fields" class="wide form-grid">
@@ -36,19 +37,28 @@
   <div class="quiz-sticky"><div class="progress-meta"><span id="page-label"></span><span id="answered-count" aria-live="polite"></span></div><progress id="progress" max="148" value="0" aria-label="FFNI 作答進度"></progress></div>
   <p class="eyebrow">MEET YOUR MANY SIDES</p><h1 id="quiz-title" tabindex="-1">不急，照自己的樣子。</h1><p class="hint">請依平時的感受回答。1 非常不同意 · 2 不同意 · 3 中立／難以判斷 · 4 同意 · 5 非常同意</p>
   <label class="english-toggle"><input id="show-english" type="checkbox">顯示英文原題對照</label><div id="question-list"></div>
+  <div class="panel" id="submission-panel" hidden>
+    <h2>送出這份問卷</h2>
+    <p id="submission-disclosure"></p>
+    <div id="contact-fields" hidden>
+      <label class="field">後續研究邀請信箱（選填）<input id="email" type="email" autocomplete="email" maxlength="254" placeholder="name@example.com"></label>
+      <p class="hint">有意收到後續問卷或訪談邀請時再填寫。聯絡信箱與答案分頁保存。</p>
+    </div>
+    <button id="reconnect" class="text-button" type="button" hidden>重新連線</button>
+  </div>
   <p id="quiz-error" class="error" role="alert"></p><div class="actions"><button id="previous">上一頁</button><button id="next-page" class="primary">下一頁</button><button id="pause" class="text-button">暫停，稍後繼續</button></div>
   <div class="page-jump"><label>跳至頁面 <select id="jump"></select></label><span class="hint">可返回修改；所有 148 題完成後顯示分析。</span></div>
 </section>
 <section id="results" hidden aria-labelledby="results-title">
   <p class="eyebrow">YOUR REFLECTION</p><h1 id="results-title" tabindex="-1">看見傾向，<br>保留改變的空間。</h1><p class="lead">這是你本次回答的整理，不是對你整個人的定義。</p>
-  <div class="result-meta" id="result-meta"></div><div class="panel result-intro"><h2>先讀懂分數。</h2><p>所有圖表顯示計分後的每題平均，範圍 1–5。數值越接近 5，代表越認同該面向所計分的傾向。不同面向相同的分數，不代表相同的罕見程度或影響。</p><p class="hint">沒有台灣常模排名，不設定高、中、低標籤；不能判定人格障礙。兩種廣泛傾向可以並存。</p></div>
+  <div class="result-meta" id="result-meta"></div>
+  <div class="panel" id="delivery-panel"><p id="delivery-note" role="status"></p><button id="review-submission" type="button" hidden>查看送出說明</button></div><div class="panel result-intro"><h2>先讀懂分數。</h2><p>所有圖表顯示計分後的每題平均，範圍 1–5。數值越接近 5，代表越認同該面向所計分的傾向。不同面向相同的分數，不代表相同的罕見程度或影響。</p><p class="hint">沒有台灣常模排名，不設定高、中、低標籤；不能判定人格障礙。兩種廣泛傾向可以並存。</p></div>
   <h2>本次較認同的敘述主題</h2><p class="hint">依個人作答平均值呈現，僅協助閱讀，不是常模比較。若同分，順序不代表差異。</p><div id="highlights" class="highlight-grid"></div>
   <h2>兩種廣泛傾向</h2><div id="broad-results" class="panel"></div>
   <details class="panel"><summary>展開三個因素的組合分數</summary><p class="hint">這是另一種組織同一批答案的方式；與上方兩種傾向不應相加。</p><div id="factor-results"></div></details>
   <h2>你的 15 個面向</h2><p class="hint">每個面向都可以展開，閱讀說明與反思問題。</p><div id="facet-results"></div>
-  <div class="panel email-panel"><p class="eyebrow">KEEP IN TOUCH</p><h2>願意收到後續研究邀請嗎？</h2><p>電郵為選填，不影響查看結果。正式版將用於後續問卷或訪談邀請，並與作答資料分開保存。</p><p class="hint"><strong>本版尚未啟用聯絡資料收集。</strong>你可以試填欄位，電郵只留在本頁記憶體，不會儲存、下載或寄送郵件。</p><form id="contact-form"><label class="field">電子郵件（選填）<input id="email" type="email" autocomplete="email" maxlength="254" placeholder="name@example.com"></label><button type="submit">預覽聯絡資料</button><button type="button" id="clear-email" class="text-button">清除電郵</button><p id="contact-message" role="status"></p></form></div>
-  <div class="actions"><button id="print" class="primary">列印／儲存結果 PDF</button><button id="download">下載我的作答資料</button><button id="edit-profile">修改背景資料</button><button id="edit-answers">檢視與修改答案</button></div><p class="hint">下載檔包含你填寫的背景資料與答案，不包含電郵。分享前請自行確認內容。</p><button id="clear-all" class="text-button danger">清除本次全部資料</button>
+  <div class="actions"><button id="print" class="primary">列印／儲存結果 PDF</button><button id="download">下載我的作答資料</button><button id="edit-profile">修改背景資料</button><button id="edit-answers">檢視與修改答案</button></div><p class="hint">下載檔包含你填寫的背景資料與答案，不包含電郵。分享前請自行確認內容。</p><button id="clear-all" class="text-button danger">清除此分頁的作答資料</button>
 </section>
-<details class="source-panel"><summary>量表來源、翻譯與計分說明</summary><p>Five Factor Narcissism Inventory（FFNI）完整 148 題。Copyright 2011: Natalie Glover, Joshua D. Miller, Donald R. Lynam, Cristina Crego, Thomas A. Widiger。原作者實驗室說明使用量表不需事先取得其許可；這不表示中文試譯已經原作者認可或驗證。</p><p>本版依英文原題製作繁體中文試譯，保留題序與五點作答，尚未經回譯、專家審查與台灣樣本信效度驗證。適合試用與審閱；正式研究應先確認研究計畫、中文工具及資料處理安排。</p><p>反向題採 6 減原分數。15 個分面向依原題本計分表加總；各面向顯示總分除以題數的平均。廣泛傾向與三因素依原題本所列分面向加總，再除以實際題數；神經質因素將「不在意外界評價」面向反向。所有題目完成才計分。</p><p><a href="https://psychology.uga.edu/sites/default/files/CVs/FFNI_Long.pdf" target="_blank" rel="noopener">喬治亞大學原始題本與計分表</a> · <a href="https://personality-studies.franklinresearch.uga.edu/assessments" target="_blank" rel="noopener">作者實驗室量表頁</a></p><p>Glover et al. (2012). The five-factor narcissism inventory: A five-factor measure of narcissistic personality traits. Journal of Personality Assessment, 94, 500–512.</p><p>目前是網站試用版，沒有啟用研究資料傳送，也不會自動寄信。正式蒐集前須另行完成蒐集者、用途、保存期限、聯絡窗口及適用的研究告知／同意安排。</p></details>
+<details class="source-panel"><summary>量表來源、翻譯與計分說明</summary><p>Five Factor Narcissism Inventory（FFNI）完整 148 題。Copyright 2011: Natalie Glover, Joshua D. Miller, Donald R. Lynam, Cristina Crego, Thomas A. Widiger。原作者實驗室說明使用量表不需事先取得其許可；這不表示中文試譯已經原作者認可或驗證。</p><p>本版依英文原題製作繁體中文試譯，保留題序與五點作答，尚未經回譯、專家審查與台灣樣本信效度驗證。適合試用與審閱；正式研究應先確認研究計畫、中文工具及資料處理安排。</p><p>反向題採 6 減原分數。15 個分面向依原題本計分表加總；各面向顯示總分除以題數的平均。廣泛傾向與三因素依原題本所列分面向加總，再除以實際題數；神經質因素將「不在意外界評價」面向反向。所有題目完成才計分。</p><p><a href="https://psychology.uga.edu/sites/default/files/CVs/FFNI_Long.pdf" target="_blank" rel="noopener">喬治亞大學原始題本與計分表</a> · <a href="https://personality-studies.franklinresearch.uga.edu/assessments" target="_blank" rel="noopener">作者實驗室量表頁</a></p><p>Glover et al. (2012). The five-factor narcissism inventory: A five-factor measure of narcissistic personality traits. Journal of Personality Assessment, 94, 500–512.</p><p>研究收件狀態顯示於頁首。有意參與者可在最後一頁閱讀資料用途與聯絡資訊，再送出本次作答。</p></details>
 <footer><span>自我探索練習室</span><span>理解自己，也為彼此留一點空間。</span></footer>
 </main><script type="module" src="app.js"></script></body></html>

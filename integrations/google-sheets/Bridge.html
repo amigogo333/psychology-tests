@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-Hant">
+<meta charset="utf-8">
+<title>問卷資料接收服務</title>
+<p>請由自我探索問卷送出作答。</p>
+<script>
+  const config = <?!= config ?>;
+  const channel = 'ffni-google-sheets-v1';
+  // Google wraps HtmlService in its own frame. The questionnaire can be a
+  // grandparent, so address its exact origin and verify its window on reply.
+  const ancestors = [];
+  for (let win = window; win !== win.parent; win = win.parent) ancestors.push(win.parent);
+
+  let busy = false;
+  window.addEventListener('message', event => {
+    const msg = event.data;
+    if (event.origin !== config.origin || !ancestors.includes(event.source) ||
+        msg?.channel !== channel || typeof msg.requestId !== 'string' || msg.requestId.length > 100) return;
+    const reply = data => event.source.postMessage({channel, requestId: msg.requestId, ...data}, config.origin);
+    if (msg.action === 'status') {
+      reply({action: 'status', config});
+      return;
+    }
+    if (msg.action !== 'submit') return;
+    if (!config.ready || busy) {
+      reply({action: 'result', ok: false});
+      return;
+    }
+    busy = true;
+    google.script.run.withSuccessHandler(result => {
+      busy = false;
+      reply({action: 'result', ...result});
+    }).withFailureHandler(() => {
+      busy = false;
+      reply({action: 'result', ok: false});
+    }).receiveSubmission(msg.payload);
+  });
+  for (const ancestor of ancestors) ancestor.postMessage({channel, action: 'hello', config}, config.origin);
+</script>
+</html>
